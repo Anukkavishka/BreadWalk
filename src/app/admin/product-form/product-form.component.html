@@ -1,0 +1,77 @@
+<div class="row">
+  <div class="col-md-6">
+      <form #f="ngForm" (ngSubmit)="save(f.value)" class="container">
+          <!--
+            i have developed this code to get the FormGroup onbject which contains
+             all the ngModel object values which then we can save in the firebase completely
+             by the object.
+        
+             when you add ngModel directive to input tags you need to specify the name="" inorder
+            identify the values from json object.
+        
+            as i have mentioned in above we can get the value of the form by using a template variable #f="ngForm"
+            then pass that template variable into a event binded (ngSubmit)="save(f.value)"
+          -->
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input #title="ngModel" [(ngModel)]="urlproduct.title" name="title" id="title" type="text" class="form-control" required>
+            <div class="alert alert-danger" *ngIf="title.touched && title.invalid" >Title is Required.</div>
+          </div>
+        
+          <div class="form-group">
+            <label for="price">Price</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <input #price="ngModel" [(ngModel)]="urlproduct.price" name="price" id="price" type="text" class="form-control" required >
+                <div class="input-group-append">
+                  <span class="input-group-text">.00</span>
+                </div>
+                
+              </div>
+              <div class="alert alert-danger" *ngIf="price.touched && price.invalid" > Price is Required.</div>
+        
+          </div>
+        
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select #category="ngModel" [(ngModel)]="urlproduct.category" name="category" id="category" class="form-control" required>
+              <option value=""></option>
+             <!-- this '.key' gives the unique values of each entries -->
+              <option *ngFor="let c of categories$ | async " [value]="c.key">
+                <!--when you don't put the async pipe the ngFor will give a error sayin the type 
+                  your trying to iterate is not iterable-->
+                {{ c.payload.val().name }}
+              </option>
+            </select>
+            <div class="alert alert-danger" *ngIf="category.touched && category.invalid" > Category is Required.</div>
+        
+          </div>
+         
+          <div class="form-group">
+            <label for="imageUrl">Image URL</label>
+            <input #imageUrl="ngModel" [(ngModel)]="urlproduct.imageUrl" name="imageUrl" id="imageUrl" type="text" class="form-control" required>
+            <div class="alert alert-danger" *ngIf="imageUrl.touched && imageUrl.invalid" > ImageUrl is Required.</div>
+          </div>
+        
+          <button class="btn medium btn-primary">Save</button>
+          <button type="button" (click)="delete()" class="btn medium btn-danger" style="margin-left :10px;">Delete</button>
+        <!--you can install and use 3rd party module named ng2-validation for much more custom validation even 
+        when using template driven forms
+        in Reactive forms you handle the input validations in the TS files.
+        you need to add this to app.module.ts imports array -->
+        </form>
+  </div>
+  <div class="col-md-6">
+      <div class="card" style="width: 18rem;">
+          <img [src]="urlproduct.imageUrl" *ngIf="urlproduct.imageUrl" class="card-img-top" alt="">
+          <div class="card-body">
+            <h5 class="card-title">{{urlproduct.title}}</h5>
+            <p class="card-text">{{urlproduct.price |currency : 'USD': true }}</p>
+          </div>
+        </div>
+  </div>
+</div>
+
+
